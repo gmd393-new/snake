@@ -1,17 +1,19 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const playerNameInput = document.getElementById('playerName');
+const speedControl = document.getElementById('speedControl');
 const highScoreList = document.getElementById('highScoreList');
 
 const gridSize = 20;
 const tileCount = canvas.width / gridSize;
 
 let snake = [{ x: 10, y: 10 }];
-let food = { x: 15, y: 15 }; // Corrected line without the extra ]
+let food = { x: 15, y: 15 };
 let dx = 1;
 let dy = 0;
 let score = 0;
-let gameRunning = true; // Flag to check if the game is currently running
+let gameRunning = true;
+let gameSpeed = 100;
 
 function drawGame() {
     if (gameRunning) {
@@ -24,19 +26,23 @@ function drawGame() {
             clearCanvas();
             drawFood();
             drawSnake();
-            setTimeout(drawGame, 100);
+            setTimeout(drawGame, gameSpeed);
         }
     }
 }
 
 function clearCanvas() {
-    ctx.fillStyle = '#a3c9a8'; // Matches the canvas background color
+    ctx.fillStyle = '#333';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawSnake() {
-    ctx.fillStyle = 'green';
-    snake.forEach(part => ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize, gridSize));
+    ctx.fillStyle = '#76c7c0';
+    ctx.strokeStyle = '#fff';
+    snake.forEach(part => {
+        ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize, gridSize);
+        ctx.strokeRect(part.x * gridSize, part.y * gridSize, gridSize, gridSize);
+    });
 }
 
 function moveSnake() {
@@ -52,7 +58,14 @@ function moveSnake() {
 }
 
 function drawFood() {
-    ctx.fillStyle = 'red';
+    const gradient = ctx.createRadialGradient(
+        food.x * gridSize + gridSize / 2, food.y * gridSize + gridSize / 2, 5,
+        food.x * gridSize + gridSize / 2, food.y * gridSize + gridSize / 2, 15
+    );
+    gradient.addColorStop(0, '#ff0');
+    gradient.addColorStop(1, '#f00');
+
+    ctx.fillStyle = gradient;
     ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
 }
 
@@ -93,8 +106,8 @@ function updateHighScores() {
     const playerName = playerNameInput.value || "Anonymous";
     const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
 
-    // Add the new score to the list
-    highScores.push({ name: playerName, score: score });
+    // Add the new score to the list, including the speed
+    highScores.push({ name: playerName, score: score, speed: 350 - gameSpeed });
 
     // Sort the scores in descending order
     highScores.sort((a, b) => b.score - a.score);
@@ -112,7 +125,7 @@ function updateHighScores() {
 function displayHighScores() {
     const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
     highScoreList.innerHTML = highScores
-        .map(score => `<li>${score.name}: ${score.score}</li>`)
+        .map(score => `<li>${score.name}: ${score.score} (Speed: ${score.speed}ms)</li>`)
         .join('');
 }
 
@@ -148,6 +161,11 @@ document.addEventListener('keydown', (event) => {
             }
             break;
     }
+});
+
+// Listen for changes to the speed slider
+speedControl.addEventListener('input', (event) => {
+    gameSpeed = 350 - event.target.value; // Adjust the game speed (higher value = slower speed)
 });
 
 // Initialize the game
