@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Snake Game</h1>
+    <input type="text" id="playerName" placeholder="Enter your name" />
     <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div id="highScores">
+        <h2>High Scores</h2>
+        <ul id="highScoreList"></ul>
+    </div>
     <script src="snake.js"></script>
 </body>
 </html>
