@@ -1,30 +1,36 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const playerNameInput = document.getElementById('playerName');
+const highScoreList = document.getElementById('highScoreList');
 
 const gridSize = 20;
 const tileCount = canvas.width / gridSize;
 
 let snake = [{ x: 10, y: 10 }];
-let food = { x: 15, y: 15 };
+let food = { x: 15, y: 15 }; // Corrected line without the extra ]
 let dx = 1;
 let dy = 0;
 let score = 0;
+let gameRunning = true; // Flag to check if the game is currently running
 
 function drawGame() {
-    moveSnake();
-    if (isGameOver()) {
-        alert('Game Over! Your score was ' + score);
-        resetGame();
-    } else {
-        clearCanvas();
-        drawFood();
-        drawSnake();
-        setTimeout(drawGame, 100);
+    if (gameRunning) {
+        moveSnake();
+        if (isGameOver()) {
+            gameRunning = false;
+            updateHighScores();
+            alert('Game Over! Your score was ' + score + '. Press Space to restart.');
+        } else {
+            clearCanvas();
+            drawFood();
+            drawSnake();
+            setTimeout(drawGame, 100);
+        }
     }
 }
 
 function clearCanvas() {
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#a3c9a8'; // Matches the canvas background color
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
@@ -78,11 +84,45 @@ function resetGame() {
     dx = 1;
     dy = 0;
     score = 0;
+    gameRunning = true;
     placeFood();
+    drawGame();
+}
+
+function updateHighScores() {
+    const playerName = playerNameInput.value || "Anonymous";
+    const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+
+    // Add the new score to the list
+    highScores.push({ name: playerName, score: score });
+
+    // Sort the scores in descending order
+    highScores.sort((a, b) => b.score - a.score);
+
+    // Keep only the top 5 scores
+    highScores.splice(5);
+
+    // Save the updated high scores
+    localStorage.setItem('highScores', JSON.stringify(highScores));
+
+    // Display the high scores
+    displayHighScores();
+}
+
+function displayHighScores() {
+    const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+    highScoreList.innerHTML = highScores
+        .map(score => `<li>${score.name}: ${score.score}</li>`)
+        .join('');
 }
 
 document.addEventListener('keydown', (event) => {
     switch (event.keyCode) {
+        case 32: // Space bar
+            if (!gameRunning) {
+                resetGame();
+            }
+            break;
         case 37: // Left arrow
             if (dx === 0) {
                 dx = -1;
@@ -110,4 +150,6 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+// Initialize the game
+displayHighScores();
 drawGame();
