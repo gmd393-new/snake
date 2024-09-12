@@ -5,39 +5,65 @@
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background-color: #d3d3d3; /* Light gray background for the page */
-    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #e09, #d0e);
+    font-family: 'Roboto', sans-serif;
 }
 
 h1 {
     margin-bottom: 10px;
+    color: #fff;
+    text-shadow: 2px 2px 4px #000;
 }
 
-input {
-    margin-bottom: 20px;
-    padding: 5px;
+input[type="text"] {
+    margin-bottom: 10px;
+    padding: 10px;
     font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+label {
+    color: #fff;
+    margin-top: 10px;
+}
+
+input[type="range"] {
+    margin-bottom: 20px;
+    width: 200px;
 }
 
 canvas {
-    border: 5px solid #000; /* Thicker black border around the canvas */
-    background-color: #a3c9a8; /* Light green background inside the game box */
+    border: 5px solid #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
+    background-color: #333;
 }
 
 #highScores {
     margin-top: 20px;
+    color: #fff;
 }
 
-#highScoreList {
-    list-style-type: none;
-    padding: 0;
+#highScoreList li {
+    background: #fff;
+    color: #333; /* Dark text color for better visibility */
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    text-align: center;
 }
+
 
     #highScoreList li {
         background: #fff;
         padding: 5px;
         margin: 5px 0;
-        border: 1px solid #000;
+        border-radius: 5px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         width: 200px;
         text-align: center;
     }
